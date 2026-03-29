@@ -1,0 +1,11 @@
+{
+  "id": "cakemod",          
+  "name": "蛋糕尖塔",
+  "author": "大蛋糕",
+  "description": "小改动",
+  "version": "1.0",
+  "has_pck": true,        
+  "has_dll": true,        
+  "dependencies": ["BaseLib"],     
+  "affects_gameplay": true 
+}

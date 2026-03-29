@@ -1,0 +1,104 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build PCK",
+            "type": "shell",
+            "command": "C:\\Users\\DIY\\Downloads\\Godot_v4.5.1-stable_mono_win64\\Godot_v4.5.1-stable_mono_win64\\Godot_v4.5.1-stable_mono_win64_console.exe",
+            "args": [
+                "--headless",
+                "--export-pack",
+                "Windows Desktop",
+                "cakemod.pck"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Build .NET DLL",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "cakemod.csproj",
+                "-c",
+                "Release"
+            ],
+            "problemMatcher": [
+                "$msCompile"
+            ]
+        },
+        {
+        "label": "Deploy PCK",
+        "type": "process",
+        "command": "powershell",
+        "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "$dest = 'D:\\SteamLibrary\\steamapps\\common\\Slay the Spire 2\\mods\\cakemod\\cakemod.pck'; if (Test-Path -LiteralPath $dest) { Copy-Item -LiteralPath $dest -Destination \"$dest.bak\" -Force; Write-Host 'Backup successful.' }; Copy-Item -LiteralPath 'cakemod.pck' -Destination $dest -Force; Write-Host 'PCK deployed successfully.'"
+        ],
+        "problemMatcher": [],
+        "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+        }
+        },
+        {
+            "label": "Build and Deploy All",
+            "dependsOn": [
+                "Build .NET DLL",
+                "Build PCK",
+                "Deploy PCK"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Launch Slay the Spire 2",
+            "type": "shell",
+            "command": ".\\launch_opengl.bat",
+            "options": {
+                "cwd": "D:\\SteamLibrary\\steamapps\\common\\Slay the Spire 2"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Zip Mods",
+            "type": "process",
+            "command": "python",
+            "args": [
+                "zip_mods.py"
+            ],
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Build Installer",
+            "dependsOn": [
+                "Zip Mods"
+            ],
+            "type": "process",
+            "command": "python",
+            "args": [
+                "build_installer.py"
+            ],
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        }
+    ]
+}
