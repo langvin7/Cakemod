@@ -1,3 +1,23 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# PyInstaller
+build/
+dist/
+*.spec
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+pyinstaller-*/
+pyinstaller*.zip
+pyi.zip
+base_library.zip
+*.pkg
+*.toc
+*.pyz
+warn-*.txt
+xref-*.html
+localpycs/
