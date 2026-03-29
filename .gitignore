@@ -2,9 +2,14 @@
 .godot/
 /android/
 
-# PyInstaller
+# Build outputs
 build/
 dist/
+*.pck
+bin/
+obj/
+
+# PyInstaller
 *.spec
 *.pyc
 __pycache__/
@@ -25,3 +30,13 @@ localpycs/
 # Python scripts
 *.py
 mods.zip
+
+# Exclude unnecessary files - keep only Scripts, image, localization and project files
+libs/
+.editorconfig
+.gitattributes
+备忘.txt
+更新.txt
+task_progress.md
+icon.svg
+icon.svg.import

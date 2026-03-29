@@ -1,4 +1,0 @@
-- [ ] Read `localization/zhs/cards.json`
-- [ ] Read `Scripts/Ironclad/PerfectedStrikePatch.cs`
-- [ ] Update `localization/zhs/cards.json` to modify "MAD_SCIENCE.description" and "MAD_SCIENCE.title", and add conditional description for Perfected Strike.
-- [ ] Update `Scripts/Ironclad/PerfectedStrikePatch.cs` to change Perfected Strike's description if it's not selected.
