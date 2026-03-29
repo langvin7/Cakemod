@@ -1,6 +1,8 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+*.import
+*.uid
 
 # Build outputs
 build/
@@ -38,8 +40,6 @@ mods.zip
 libs/
 .editorconfig
 .gitattributes
-备忘.txt
-更新.txt
 task_progress.md
 icon.svg
 icon.svg.import
