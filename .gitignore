@@ -13,6 +13,7 @@ obj/
 
 # IDE and tools
 .continue/
+.vscode/
 
 # PyInstaller
 *.spec
@@ -43,3 +44,5 @@ libs/
 task_progress.md
 icon.svg
 icon.svg.import
+export_presets.cfg
+备忘.txt
