@@ -21,3 +21,7 @@ base_library.zip
 warn-*.txt
 xref-*.html
 localpycs/
+
+# Python scripts
+*.py
+mods.zip
