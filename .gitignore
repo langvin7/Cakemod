@@ -9,6 +9,9 @@ dist/
 bin/
 obj/
 
+# IDE and tools
+.continue/
+
 # PyInstaller
 *.spec
 *.pyc
