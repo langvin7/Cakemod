@@ -41,11 +41,14 @@ public class SwordBoomerangConstructorPatch
     }
 } */
 
-/* 
+
 [HarmonyPatch(typeof(SwordBoomerang), "CanonicalVars", MethodType.Getter)]
 public static class SwordBoomerangCanonicalVarsPatch
 {
-    private static readonly DynamicVar[] ModifiedVars = [ ];
+    private static readonly DynamicVar[] ModifiedVars = [
+        new DamageVar(3m, ValueProp.Move),
+        new RepeatVar(2)
+    ];
 
     [HarmonyPostfix]
     public static void Postfix(ref IEnumerable<DynamicVar> __result)
@@ -53,7 +56,7 @@ public static class SwordBoomerangCanonicalVarsPatch
         __result = ModifiedVars;
     }
 }
- */
+
 
 /* 
 [HarmonyPatch(typeof(CardModel), "CanonicalKeywords", MethodType.Getter)]
@@ -141,7 +144,7 @@ public static class SwordBoomerang_PileChange_Patch
             {
 
                 _isTriggering = true;
-
+                CardCmd.Preview(boomerang);
                 await DamageCmd.Attack(boomerang.DynamicVars.Damage.BaseValue)
                     .WithHitCount(boomerang.IsUpgraded?2:1)
                     .FromCard(boomerang)

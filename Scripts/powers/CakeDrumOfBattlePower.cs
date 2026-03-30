@@ -37,6 +37,9 @@ public sealed class CakeDrumOfBattlePower : CakePowerModel
 			return;
 		}
 		Flash();
+		CardModel thunder = combatState.CreateCard<Thunder>(base.Owner.Player);
+		CardCmd.Preview(thunder);
+		await CardPileCmd.AddGeneratedCardToCombat(thunder, PileType.Draw, addedByPlayer: true,CardPilePosition.Random);
 		CardPile drawPile = PileType.Draw.GetPile(base.Owner.Player);
 		for (int i = 0; i < base.Amount; i++)
 		{
@@ -54,8 +57,9 @@ public sealed class CakeDrumOfBattlePower : CakePowerModel
 
 				if (selectedCards.Any())
 				{
-					CardModel thunder = combatState.CreateCard<Thunder>(base.Owner.Player);
-					await CardPileCmd.AddGeneratedCardToCombat(thunder, PileType.Draw, addedByPlayer: true,CardPilePosition.Random);
+					CardModel thunder2 = combatState.CreateCard<Thunder>(base.Owner.Player);
+					CardCmd.Preview(thunder2);
+					await CardPileCmd.AddGeneratedCardToCombat(thunder2, PileType.Draw, addedByPlayer: true,CardPilePosition.Random);
 				}
 				else
 				{

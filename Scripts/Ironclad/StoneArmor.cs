@@ -106,6 +106,7 @@ public static class StoneArmorOnPlayPatch
 }
 
 
+
 [HarmonyPatch(typeof(StoneArmor), "OnUpgrade")]
 public static class StoneArmorOnUpgradePatch
 {

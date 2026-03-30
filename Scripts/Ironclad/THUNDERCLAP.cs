@@ -19,7 +19,7 @@ namespace cakemod.Scripts;
 public static class ThunderclapCanonicalVarsPatch
 {
     private static readonly DynamicVar[] ModifiedVars = [
-        new DamageVar(6m, ValueProp.Move),
+        new DamageVar(4m, ValueProp.Move),
         new PowerVar<VulnerablePower>(1m),
         new PowerVar<WeakPower>(1m)
     ];
@@ -68,7 +68,8 @@ public static class ThunderclapOnPlayPatch
         await PowerCmd.Apply<WeakPower>(__instance.CombatState.HittableEnemies, 1, __instance.Owner.Creature, __instance);
 
         CardModel card = __instance.CombatState.CreateCard<Thunder>(__instance.Owner);
-        CardCmd.PreviewCardPileAdd(await CardPileCmd.AddGeneratedCardToCombat(card, PileType.Draw, addedByPlayer: true));
+        CardCmd.Preview(card);
+        CardCmd.PreviewCardPileAdd(await CardPileCmd.AddGeneratedCardToCombat(card, PileType.Draw, addedByPlayer: true, CardPilePosition.Random));
     }
 }
 
@@ -78,7 +79,7 @@ public static class ThunderclapOnUpgradePatch
     [HarmonyPrefix]
     public static bool Prefix(Thunderclap __instance)
     {
-        __instance.DynamicVars.Damage.UpgradeValueBy(3m);
+        __instance.DynamicVars.Damage.UpgradeValueBy(2m);
         return false;
     }
 }

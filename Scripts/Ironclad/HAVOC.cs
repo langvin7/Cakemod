@@ -65,3 +65,14 @@ public static class HavocOnPlayPatch
         await CardPileCmd.AutoPlayFromDrawPile(choiceContext, __instance.Owner, 1, CardPilePosition.Top, forceExhaust: true);
     }
 }
+
+[HarmonyPatch(typeof(Havoc), "OnUpgrade")]
+public static class HavocOnUpgradePatch
+{
+	[HarmonyPrefix]
+	public static bool Prefix(Havoc __instance)
+	{
+		__instance.DynamicVars.Cards.UpgradeValueBy(1m);
+		return false;
+	}
+}

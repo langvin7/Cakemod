@@ -18,6 +18,8 @@ using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection; 
 using MegaCrit.Sts2.Core.CardSelection;
 using MegaCrit.Sts2.Core.Entities.Multiplayer;
+using MegaCrit.Sts2.Core.Extensions;
+
 
 
 
@@ -98,7 +100,7 @@ public static async Task<IEnumerable<CardModel>> FromDraw(
     CardSelectorPrefs prefs, 
     Func<CardModel, bool>? filter, 
     AbstractModel source, 
-    int? topCount = null) // 修改点1：增加 topCount 参数，表示要看牌堆顶几张牌
+    int? topCount = null,bool shuffle = false) // 修改点1：增加 topCount 参数，表示要看牌堆顶几张牌
 {
     if (CombatManager.Instance.IsOverOrEnding)
     {
@@ -114,6 +116,12 @@ public static async Task<IEnumerable<CardModel>> FromDraw(
 
     // 获取玩家的抽牌堆
     IEnumerable<CardModel> drawPile = PileType.Draw.GetPile(player).Cards;
+
+    if(shuffle)
+    {
+        drawPile = drawPile.ToList().UnstableShuffle(player.RunState.Rng.CombatCardSelection);
+    }
+
 
     // 修改点2：如果传入了 topCount，则只截取牌堆顶的 X 张牌
     if (topCount.HasValue && topCount.Value > 0)

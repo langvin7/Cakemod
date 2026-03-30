@@ -7,20 +7,30 @@ using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using System.Threading.Tasks;
 using MegaCrit.Sts2.Core.Logging;
+using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
 
 
 namespace cakemod.Patches
 {
-    [HarmonyPatch(typeof(CardPileCmd))]
+    [HarmonyPatch]
     public class CardPileCmdPatch
     {
-        [HarmonyPatch(nameof(CardPileCmd.Add))]
-        [HarmonyPatch(new[] { typeof(CardModel), typeof(PileType), typeof(CardPilePosition), typeof(AbstractModel), typeof(bool) })]
+        [HarmonyTargetMethods]
+        static IEnumerable<MethodBase> TargetMethods()
+        {
+            return typeof(CardPileCmd).GetMethods()
+                .Where(m => m.Name == "Add" && 
+                       m.GetParameters().Length >= 2 &&
+                       m.GetParameters()[0].ParameterType == typeof(CardModel) &&
+                       m.GetParameters()[1].ParameterType == typeof(PileType));
+        }
+
         [HarmonyPostfix]
         public static async void AddPostfix(Task<CardPileAddResult> __result, CardModel card, PileType newPileType)
         {
             var result = await __result;
-            
             if (result.success && newPileType == PileType.Deck)
             {
                 CardModelExtensions.InvokeAfterCardAddedToDeck(card);

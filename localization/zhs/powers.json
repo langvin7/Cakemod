@@ -834,12 +834,12 @@
   "CAKEMOD-CAKE_UNMOVABLE_POWER.description": "你每回合打出的前[blue]{Amount}[/blue]张初始或基础技能牌会被打出两次。",
   "CAKEMOD-CAKE_UNMOVABLE_POWER.smartDescription": "你每回合打出的前[blue]{Amount}[/blue]张初始或基础技能牌会被打出两次。",
   "CAKEMOD-CAKE_UNMOVABLE_POWER.title": "不动",
-  "CAKEMOD-CAKE_DRUM_OF_BATTLE_POWER.description": "在你的回合开始时，选择[gold]抽牌堆[/gold]顶部的[blue]1[/blue]张牌。若选择该牌则将一张[gold]惊雷[/gold]加入[gold]抽牌堆[/gold]，否则[gold]消耗[/gold]该牌。",
+  "CAKEMOD-CAKE_DRUM_OF_BATTLE_POWER.description": "在你的回合开始时将一张[gold]惊雷[/gold]加入你的[gold]抽牌堆[/gold]，选择[gold]抽牌堆[/gold]顶部的[blue]1[/blue]张牌。若选择该牌则将一张[gold]惊雷[/gold]加入[gold]抽牌堆[/gold]，否则[gold]消耗[/gold]该牌。",
   "CAKEMOD-CAKE_DRUM_OF_BATTLE_POWER.selectionScreenPrompt": "选择是否保留该牌（不选则消耗该牌）。",
-  "CAKEMOD-CAKE_DRUM_OF_BATTLE_POWER.smartDescription": "在你的回合开始时，选择[gold]抽牌堆[/gold]顶部的[blue]1[/blue]张牌。若选择该牌则将一张[gold]惊雷[/gold]加入[gold]抽牌堆[/gold]，否则[gold]消耗[/gold]该牌。",
+  "CAKEMOD-CAKE_DRUM_OF_BATTLE_POWER.smartDescription": "在你的回合开始时将一张[gold]惊雷[/gold]加入你的[gold]抽牌堆[/gold]，选择[gold]抽牌堆[/gold]顶部的[blue]1[/blue]张牌。若选择该牌则将一张[gold]惊雷[/gold]加入[gold]抽牌堆[/gold]，否则[gold]消耗[/gold]该牌。",
   "CAKEMOD-CAKE_DRUM_OF_BATTLE_POWER.title": "战鼓",
-  "CAKEMOD-CAKE_STAMPEDE_POWER.description": "在你的回合开始时，观看[gold]抽牌堆[/gold]顶部的[blue]5[/blue]张牌。之后选择将其中耗能最高的1张牌打出2次并在抽牌堆加入3张惊雷，或全部进入弃牌堆。",
+  "CAKEMOD-CAKE_STAMPEDE_POWER.description": "在你的回合开始时，观看[gold]抽牌堆[/gold]顶部的[blue]5[/blue]张牌。之后选择将其中耗能最高的1张牌打出2次并在抽牌堆加入[blue]{ThunderCount}[/blue]张惊雷，或全部进入弃牌堆。",
   "CAKEMOD-CAKE_STAMPEDE_POWER.selectionScreenPrompt": "观看牌库顶五张牌，做出选择。",
-  "CAKEMOD-CAKE_STAMPEDE_POWER.smartDescription": "在你的回合开始时，观看[gold]抽牌堆[/gold]顶部的[blue]5[/blue]张牌。之后选择将其中耗能最高的1张牌打出2次并在抽牌堆加入3张惊雷，或全部进入弃牌堆。",
+  "CAKEMOD-CAKE_STAMPEDE_POWER.smartDescription": "在你的回合开始时，观看[gold]抽牌堆[/gold]顶部的[blue]5[/blue]张牌。之后选择将其中耗能最高的1张牌打出2次并在抽牌堆加入[blue]{ThunderCount}[/blue]张惊雷，或全部进入弃牌堆。",
   "CAKEMOD-CAKE_STAMPEDE_POWER.title": "惊逃"
 }

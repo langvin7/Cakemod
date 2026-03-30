@@ -45,7 +45,7 @@ public class SecondWindConstructorPatch
 public static class SecondWindCanonicalVarsPatch
 {
     private static readonly DynamicVar[] ModifiedVars = [
-        new BlockVar(2m, ValueProp.Move)
+        new BlockVar(4m, ValueProp.Move)
     ];
 
     [HarmonyPostfix]
@@ -110,7 +110,7 @@ public static class SecondWindOnUpgradePatch
     [HarmonyPrefix]
     public static bool Postfix(SecondWind __instance)
     {
-        __instance.DynamicVars.Block.UpgradeValueBy(1m);
+        __instance.DynamicVars.Block.UpgradeValueBy(2m);
         return false;
     }
 }
@@ -129,10 +129,7 @@ public static class SecondWindGetCardsPatch
         CardPile discardPile = PileType.Discard.GetPile(__instance.Owner);
         CardPile draw = PileType.Draw.GetPile(__instance.Owner);
         IEnumerable<CardModel> DisCards = discardPile.Cards.Where(c => c.Type == CardType.Curse || c.Type == CardType.Status);
-        IEnumerable<CardModel> drawCards = draw.Cards.Where(c => c.Type == CardType.Curse || c.Type == CardType.Status);
-        IEnumerable<CardModel> AllCards = DisCards.Concat(drawCards);
-
-        __result = handCards.Concat(AllCards);
+        __result = handCards.Concat(DisCards);
 
         return false;
     }

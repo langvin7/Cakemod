@@ -1,0 +1,31 @@
+Tabletop Simulator Mods 安装程序使用说明
+===========================================
+
+文件位置：
+- 安装程序：dist\TTS_Mods_Installer.exe (约2.2GB)
+
+功能说明：
+1. 自动检测目标用户的文档路径（通过Windows注册表）
+2. 将Mods文件安装到：[用户文档]\My Games\Tabletop Simulator\Mods
+3. 如果目标目录已存在文件，会进行覆盖更新
+
+使用方法：
+1. 将 TTS_Mods_Installer.exe 复制到目标电脑
+2. 双击运行 TTS_Mods_Installer.exe
+3. 程序会自动检测用户文档路径并安装
+4. 安装完成后按任意键退出
+
+技术细节：
+- 源代码：installer.py
+- 打包配置：installer.spec
+- 打包工具：PyInstaller 6.19.0
+- 打包命令：pyinstaller installer.spec
+
+注意事项：
+- 安装程序较大（2.2GB），因为包含了所有Mods资源文件
+- 需要足够的磁盘空间来安装
+- 安装过程中会显示目标路径
+- 如果安装失败，会显示错误信息
+
+源文件位置：
+C:\Users\DIY\Documents\My Games\Tabletop Simulator\Mods

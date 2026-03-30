@@ -50,7 +50,7 @@ public static class ForgottenRitualCanonicalVarsPatch
 {
 	private static readonly DynamicVar[] ModifiedVars =
     [
-		new BlockVar(6m, ValueProp.Move),
+		new BlockVar(4m, ValueProp.Move),
 		new CardsVar(2)
     ];
 
@@ -164,7 +164,7 @@ public static class ForgottenRitual_PileChange_Patch
             {
                 // 上锁
                 _isTriggering = true;
-
+                CardCmd.Preview(forgottenRitual);
                 await CreatureCmd.GainBlock(forgottenRitual.Owner.Creature, forgottenRitual.DynamicVars.Block,null);
 
             }
@@ -185,7 +185,7 @@ public static class ForgottenRitualOnUpgradePatch
     [HarmonyPrefix]
     public static bool Postfix(ForgottenRitual __instance)
     {
-        __instance.DynamicVars.Block.UpgradeValueBy(3m);
+        __instance.DynamicVars.Block.UpgradeValueBy(2m);
         return false;
     }
 }

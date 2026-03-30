@@ -106,7 +106,7 @@ public static class CinderOnPlayPatch
             .WithHitVfxNode((Creature t) => NFireBurstVfx.Create(t, 0.75f))
             .Execute(choiceContext);
          List<CardModel> cardsIn = PileType.Draw.GetPile(__instance.Owner).Cards
-            .Take(3)
+            .Take(2)
             .ToList();
 
 		CardModel cardModel = (await CardSelectCmd.FromSimpleGrid(choiceContext, cardsIn, __instance.Owner, new CardSelectorPrefs(CardSelectorPrefs.ExhaustSelectionPrompt, 1))).FirstOrDefault();

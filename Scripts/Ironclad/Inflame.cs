@@ -48,7 +48,7 @@ public static class InflameCanonicalVarsPatch
 {
     private static readonly DynamicVar[] ModifiedVars = [
         new PowerVar<StrengthPower>(3m),
-        new HpLossVar(1m)
+        new HpLossVar(2m)
     ];
 
     [HarmonyPostfix]

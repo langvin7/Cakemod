@@ -14,6 +14,10 @@ using MegaCrit.Sts2.Core.ValueProps;
 using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Platform;
 using cakemod.Scripts.function;
+using MegaCrit.Sts2.Core.Nodes.Rooms;
+using MegaCrit.Sts2.Core.Nodes.Vfx;
+using MegaCrit.Sts2.Core.Helpers;
+
 
 namespace cakemod.Scripts;
 
@@ -36,12 +40,20 @@ public class Thunder : CakeCardModel
 
     public override IEnumerable<CardKeyword> CanonicalKeywords => [CardKeyword.Unplayable];
 
+    protected override IEnumerable<DynamicVar> CanonicalVars => [new DamageVar(2m, ValueProp.Unpowered | ValueProp.Move)];
 
-    public override bool HasTurnEndInHandEffect => false;
+    public override bool HasTurnEndInHandEffect => true;
 
     public Thunder() : base(energyCost, type, rarity, targetType, shouldShowInCardLibrary)
     {
     }
+
+
+    public override async Task OnTurnEndInHand(PlayerChoiceContext choiceContext)
+	{
+		VfxCmd.PlayOnCreature(base.Owner.Creature, "vfx/vfx_attack_lightning");
+		await CreatureCmd.Damage(choiceContext, base.Owner.Creature, base.DynamicVars.Damage, this);
+	}
 }
 
 [HarmonyPatch(typeof(AbstractModel), nameof(AbstractModel.AfterCardChangedPilesLate))]
@@ -83,4 +95,5 @@ public static class Thunder_PileChange_Patch
             }
         }
     }
+
 }

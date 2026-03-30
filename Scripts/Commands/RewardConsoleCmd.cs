@@ -1,6 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 using MegaCrit.Sts2.Core.DevConsole;
 using MegaCrit.Sts2.Core.DevConsole.ConsoleCommands;
 using MegaCrit.Sts2.Core.Entities.Players;
@@ -8,6 +7,8 @@ using MegaCrit.Sts2.Core.Rooms;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Rewards;
 using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Models;
+using System.Reflection;
 
 namespace CakeMod.Commands;
 
@@ -47,9 +48,24 @@ public class CakeRewardConsoleCmd : AbstractConsoleCmd
             }
         }
 
+        var perfectedStrikeModel = ModelDb.AllCards.FirstOrDefault(c => c.Id.Entry == "PERFECTED_STRIKE");
+        if (perfectedStrikeModel == null)
+        {
+            return new CmdResult(success: false, "PerfectedStrike card not found.");
+        }
+
         for (int i = 0; i < amount; i++)
         {
-            combatRoom.AddExtraReward(issuingPlayer, new CardReward(CardCreationOptions.ForRoom(issuingPlayer, combatRoom.RoomType), 3, issuingPlayer));
+            var reward = new CardReward(CardCreationOptions.ForRoom(issuingPlayer, combatRoom.RoomType), 2, issuingPlayer);
+            reward.AfterGenerated += () => {
+                var perfectedStrike = issuingPlayer.RunState.CreateCard(perfectedStrikeModel, issuingPlayer);
+                var cardsField = reward.GetType().GetField("_cards", BindingFlags.NonPublic | BindingFlags.Instance);
+                var cardsList = cardsField?.GetValue(reward);
+                var resultType = Type.GetType("MegaCrit.Sts2.Core.Entities.Cards.CardCreationResult, Sts2");
+                var resultInstance = Activator.CreateInstance(resultType, perfectedStrike);
+                cardsList?.GetType().GetMethod("Add")?.Invoke(cardsList, new[] { resultInstance });
+            };
+            combatRoom.AddExtraReward(issuingPlayer, reward);
         }
 
         return new CmdResult(success: true, $"Added {amount} card reward(s) to the combat room.");
