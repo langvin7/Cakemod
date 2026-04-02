@@ -46,7 +46,7 @@ public static class DemonFormCanonicalVarsPatch
 {
     private static readonly DynamicVar[] ModifiedVars = [
         new PowerVar<StrengthPower>(3m),
-        new HpLossVar(2m)
+        new HpLossVar(3m)
      ];
 
     [HarmonyPostfix]

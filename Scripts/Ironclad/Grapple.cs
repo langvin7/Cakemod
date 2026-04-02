@@ -125,7 +125,7 @@ public static class GrappleOnPlayPatch
 
         if (nonAttackCount >= 2)
         {
-            
+            await PowerCmd.Apply<WeakPower>(cardPlay.Target, 2m, __instance.Owner.Creature, __instance);
         }
 
         foreach (CardModel item in selectedCards)

@@ -13,6 +13,8 @@ using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Saves.Runs;
 using System.Runtime.CompilerServices;
 using MegaCrit.Sts2.Core.CardSelection;
+using MegaCrit.Sts2.Core.Entities.Players;
+using MegaCrit.Sts2.Core.Runs;
 
 namespace cakemod.Scripts
 {
@@ -21,6 +23,8 @@ namespace cakemod.Scripts
     {
 
         private static ConditionalWeakTable<PerfectedStrike, CardData> _cardDataMap = new ConditionalWeakTable<PerfectedStrike, CardData>();
+        private static bool _isCloningPerfectedStrike = false;
+        public static bool IsCloningPerfectedStrike => _isCloningPerfectedStrike;
 
         public class CardData
         {
@@ -47,6 +51,77 @@ namespace cakemod.Scripts
             return _cardDataMap.GetOrCreateValue(card);
         }
 
+        /// <summary>
+        /// 将 CardData 中的所有自定义数据重新同步到卡牌的 DynamicVars 和关键字上。
+        /// 用于 Downgrade、Clone、Load 等场景，防止数据被覆盖。
+        /// </summary>
+        public static void ReloadFromCardData(PerfectedStrike card, CardData data)
+        {
+            card.DynamicVars.CalculationBase.BaseValue = data.CurrentDamage;
+            card.DynamicVars.Block.BaseValue = data.CurrentBlock;
+            card.DynamicVars.Vulnerable.BaseValue = data.CurrentVulnerable;
+            card.DynamicVars.ExtraDamage.BaseValue = data.CurrentExtraDamage;
+            card.DynamicVars["IsSelected"].BaseValue = data.CurrentIsSelected;
+            card.DynamicVars["HasExhaust"].BaseValue = data.CurrentHasExhaust;
+            card.DynamicVars["Innate"].BaseValue = data.CurrentInnate;
+            card.DynamicVars["Ethereal"].BaseValue = data.CurrentEthereal;
+            card.DynamicVars.HpLoss.BaseValue = data.CurrentHpLoss;
+            card.DynamicVars.Cards.BaseValue = data.CurrentCards;
+            card.DynamicVars.Energy.BaseValue = data.CurrentEnergy;
+            card.DynamicVars["StrengthLoss"].BaseValue = data.CurrentStrengthLoss;
+            card.DynamicVars["Infernal"].BaseValue = data.CurrentInfernal;
+            card.DynamicVars.Weak.BaseValue = data.CurrentWeak;
+            card.DynamicVars["Grand"].BaseValue = data.CurrentGrand;
+            card.DynamicVars["Sage"].BaseValue = data.CurrentSage;
+
+            if (data.CurrentHasExhaust > 0)
+            {
+                card.AddKeyword(CardKeyword.Exhaust);
+                card.BaseReplayCount = 1;
+            }
+            if (data.CurrentInnate > 0)
+            {
+                card.AddKeyword(CardKeyword.Innate);
+            }
+            if (data.CurrentEthereal > 0)
+            {
+                card.AddKeyword(CardKeyword.Ethereal);
+            }
+        }
+
+        /// <summary>
+        /// 将一个 CardData 的所有字段复制到另一个 CardData（用于克隆场景）。
+        /// </summary>
+        public static void CopyCardData(CardData source, CardData dest)
+        {
+            dest.CurrentDamage = source.CurrentDamage;
+            dest.CurrentBlock = source.CurrentBlock;
+            dest.CurrentVulnerable = source.CurrentVulnerable;
+            dest.CurrentExtraDamage = source.CurrentExtraDamage;
+            dest.CurrentIsSelected = source.CurrentIsSelected;
+            dest.CurrentHasExhaust = source.CurrentHasExhaust;
+            dest.CurrentInnate = source.CurrentInnate;
+            dest.CurrentEthereal = source.CurrentEthereal;
+            dest.CurrentHpLoss = source.CurrentHpLoss;
+            dest.CurrentCards = source.CurrentCards;
+            dest.CurrentEnergy = source.CurrentEnergy;
+            dest.CurrentStrengthLoss = source.CurrentStrengthLoss;
+            dest.CurrentInfernal = source.CurrentInfernal;
+            dest.CurrentWeak = source.CurrentWeak;
+            dest.CurrentGrand = source.CurrentGrand;
+            dest.CurrentSage = source.CurrentSage;
+        }
+
+        [HarmonyPatch(typeof(CardModel), nameof(CardModel.DowngradeInternal))]
+        [HarmonyPostfix]
+        public static void DowngradeInternalPostfix(CardModel __instance)
+        {
+            if (__instance is PerfectedStrike card)
+            {
+                var data = GetCardData(card);
+                ReloadFromCardData(card, data);
+            }
+        }
 
         [HarmonyPatch(typeof(SavedProperties), nameof(SavedProperties.FromInternal))]
         [HarmonyPostfix]
@@ -85,90 +160,34 @@ namespace cakemod.Scripts
         [HarmonyPostfix]
         public static void LoadCustomData(SavedProperties __instance, object model)
         {
-            // 如果当前正在读取的对象是 PerfectedStrike，并且存档里有 int 数据
             if (model is PerfectedStrike card && __instance.ints != null)
             {
                 var data = GetCardData(card);
 
-                // 遍历存档中的 int 属性，寻找我们之前存进去的 Key
                 foreach (var prop in __instance.ints)
                 {
                     switch (prop.name)
                     {
-                        case "Mod_CurrentDamage":
-                            data.CurrentDamage = prop.value;
-                            card.DynamicVars.CalculationBase.BaseValue = data.CurrentDamage;
-                            break;
-                        case "Mod_CurrentBlock":
-                            data.CurrentBlock = prop.value;
-                            card.DynamicVars.Block.BaseValue = data.CurrentBlock;
-                            break;
-                        case "Mod_CurrentVulnerable":
-                            data.CurrentVulnerable = prop.value;
-                            card.DynamicVars.Vulnerable.BaseValue = data.CurrentVulnerable;
-                            break;
-                        case "Mod_CurrentExtraDamage":
-                            data.CurrentExtraDamage = prop.value;
-                            card.DynamicVars.ExtraDamage.BaseValue = data.CurrentExtraDamage;
-                            break;
-                        case "Mod_CurrentIsSelected":
-                            data.CurrentIsSelected = prop.value;
-                            card.DynamicVars["IsSelected"].BaseValue = data.CurrentIsSelected;
-                            break;
-                        case "Mod_CurrentHasExhaust":
-                            data.CurrentHasExhaust = prop.value;
-                            card.DynamicVars["HasExhaust"].BaseValue = data.CurrentHasExhaust;
-                            if (prop.value > 0)
-                            {
-                            card.AddKeyword(CardKeyword.Exhaust);
-                            card.BaseReplayCount = 1;
-                            } 
-                            break;
-                        case "Mod_CurrentInnate":
-                            data.CurrentInnate = prop.value;
-                            card.DynamicVars["Innate"].BaseValue = data.CurrentInnate;
-                            if (prop.value > 0) card.AddKeyword(CardKeyword.Innate);
-                            break;
-                        case "Mod_CurrentEthereal":
-                            data.CurrentEthereal = prop.value;
-                            card.DynamicVars["Ethereal"].BaseValue = data.CurrentEthereal;
-                            if (prop.value > 0) card.AddKeyword(CardKeyword.Ethereal);
-                            break;
-                        case "Mod_CurrentHpLoss":
-                            data.CurrentHpLoss = prop.value;
-                            card.DynamicVars.HpLoss.BaseValue = data.CurrentHpLoss;
-                            break;
-                        case "Mod_CurrentCards":
-                            data.CurrentCards = prop.value;
-                            card.DynamicVars.Cards.BaseValue = data.CurrentCards;
-                            break;
-                        case "Mod_CurrentEnergy":
-                            data.CurrentEnergy = prop.value;
-                            card.DynamicVars.Energy.BaseValue = data.CurrentEnergy;
-                            break;
-                        case "Mod_CurrentStrengthLoss":
-                            data.CurrentStrengthLoss = prop.value;
-                            card.DynamicVars["StrengthLoss"].BaseValue = data.CurrentStrengthLoss;
-                            break;
-                        case "Mod_CurrentInfernal":
-                            data.CurrentInfernal = prop.value;
-                            card.DynamicVars["Infernal"].BaseValue = data.CurrentInfernal;
-                            break;
-                        case "Mod_CurrentWeak":
-                            data.CurrentWeak = prop.value;
-                            card.DynamicVars.Weak.BaseValue = data.CurrentWeak;
-                            break;
-                        case "Mod_CurrentGrand":
-                            data.CurrentGrand = prop.value;
-                            card.DynamicVars["Grand"].BaseValue = data.CurrentGrand;
-                            break;
-                        case "Mod_CurrentSage":
-                            data.CurrentSage = prop.value;
-                            card.DynamicVars["Sage"].BaseValue = data.CurrentSage;
-                            if (prop.value > 0) card.EnergyCost.UpgradeBy(1);
-                            break;
+                        case "Mod_CurrentDamage": data.CurrentDamage = prop.value; break;
+                        case "Mod_CurrentBlock": data.CurrentBlock = prop.value; break;
+                        case "Mod_CurrentVulnerable": data.CurrentVulnerable = prop.value; break;
+                        case "Mod_CurrentExtraDamage": data.CurrentExtraDamage = prop.value; break;
+                        case "Mod_CurrentIsSelected": data.CurrentIsSelected = prop.value; break;
+                        case "Mod_CurrentHasExhaust": data.CurrentHasExhaust = prop.value; break;
+                        case "Mod_CurrentInnate": data.CurrentInnate = prop.value; break;
+                        case "Mod_CurrentEthereal": data.CurrentEthereal = prop.value; break;
+                        case "Mod_CurrentHpLoss": data.CurrentHpLoss = prop.value; break;
+                        case "Mod_CurrentCards": data.CurrentCards = prop.value; break;
+                        case "Mod_CurrentEnergy": data.CurrentEnergy = prop.value; break;
+                        case "Mod_CurrentStrengthLoss": data.CurrentStrengthLoss = prop.value; break;
+                        case "Mod_CurrentInfernal": data.CurrentInfernal = prop.value; break;
+                        case "Mod_CurrentWeak": data.CurrentWeak = prop.value; break;
+                        case "Mod_CurrentGrand": data.CurrentGrand = prop.value; break;
+                        case "Mod_CurrentSage": data.CurrentSage = prop.value; break;
                     }
                 }
+
+                ReloadFromCardData(card, data);
             }
         }
 
@@ -302,6 +321,54 @@ namespace cakemod.Scripts
 
 
 
+        [HarmonyPatch(typeof(CardModel), nameof(CardModel.CreateClone))]
+        [HarmonyPrefix]
+        public static void CreateClonePrefix(CardModel __instance)
+        {
+            if (__instance is PerfectedStrike)
+            {
+                _isCloningPerfectedStrike = true;
+            }
+        }
+
+        [HarmonyPatch(typeof(CardModel), nameof(CardModel.CreateClone))]
+        [HarmonyPostfix]
+        public static void CreateClonePostfix(CardModel __instance, CardModel __result)
+        {
+            if (__instance is PerfectedStrike originalCard && __result is PerfectedStrike clonedCard)
+            {
+                var originalData = GetCardData(originalCard);
+                var clonedData = GetCardData(clonedCard);
+                CopyCardData(originalData, clonedData);
+                ReloadFromCardData(clonedCard, clonedData);
+            }
+            _isCloningPerfectedStrike = false;
+        }
+
+        [HarmonyPatch(typeof(RunState), nameof(RunState.CloneCard))]
+        [HarmonyPrefix]
+        public static void RunStateCloneCardPrefix(CardModel mutableCard)
+        {
+            if (mutableCard is PerfectedStrike)
+            {
+                _isCloningPerfectedStrike = true;
+            }
+        }
+
+        [HarmonyPatch(typeof(RunState), nameof(RunState.CloneCard))]
+        [HarmonyPostfix]
+        public static void RunStateCloneCardPostfix(CardModel mutableCard, CardModel __result)
+        {
+            if (mutableCard is PerfectedStrike originalCard && __result is PerfectedStrike clonedCard)
+            {
+                var originalData = GetCardData(originalCard);
+                var clonedData = GetCardData(clonedCard);
+                CopyCardData(originalData, clonedData);
+                ReloadFromCardData(clonedCard, clonedData);
+            }
+            _isCloningPerfectedStrike = false;
+        }
+
         [HarmonyPatch("CanonicalVars", MethodType.Getter)]
         [HarmonyPostfix]
         public static void CanonicalVarsPostfix(PerfectedStrike __instance, ref IEnumerable<DynamicVar> __result)
@@ -391,21 +458,11 @@ namespace cakemod.Scripts
             CardPile drawPile = PileType.Draw.GetPile(card.Owner);
             bool isDrawPileEmpty = drawPile.Cards.Count == 0;
             
-            if (grandValue > 0 && isDrawPileEmpty)
-            {
-                var damageVar = card.DynamicVars.CalculatedDamage.WithMultiplier((CardModel _, Creature? __) => 2m);
-                await DamageCmd.Attack((CalculatedDamageVar)damageVar).FromCard(card).Targeting(cardPlay.Target)
+
+            await DamageCmd.Attack(card.DynamicVars.CalculatedDamage).FromCard(card).Targeting(cardPlay.Target)
                     .WithHitFx(null, null, "heavy_attack.mp3")
                     .WithHitCount(1+card.DynamicVars["Sage"].IntValue)
                     .Execute(choiceContext);
-            }
-            else
-            {
-                await DamageCmd.Attack(card.DynamicVars.CalculatedDamage).FromCard(card).Targeting(cardPlay.Target)
-                    .WithHitFx(null, null, "heavy_attack.mp3")
-                    .WithHitCount(1+card.DynamicVars["Sage"].IntValue)
-                    .Execute(choiceContext);
-            }
 
 
             // Infernal: 检测Infernal数量并让玩家选择卡牌
@@ -504,6 +561,20 @@ namespace cakemod.Scripts
                 return false;
             }
             return true;
+        }
+
+        [HarmonyPatch(typeof(AbstractModel), "ModifyDamageMultiplicative")]
+        [HarmonyPostfix]
+        public static void ModifyDamageMultiplicativePostfix(CardModel __instance, Creature? target, decimal amount, ValueProp props, Creature? dealer, CardModel? cardSource, ref decimal __result)
+        {
+            if (__instance is PerfectedStrike card && cardSource == __instance && card.DynamicVars["Grand"].IntValue > 0)
+            {
+                CardPile drawPile = PileType.Draw.GetPile(card.Owner);
+                if (drawPile.Cards.Count == 0)
+                {
+                    __result *= 2m;
+                }
+            }
         }
 
     }

@@ -82,8 +82,17 @@ public sealed class CakeStampedePower : CakePowerModel
 				int maxCost = topCards.Max(c => c.EnergyCost.GetWithModifiers(CostModifiers.All));
 				var highestCostCards = topCards.Where(c => c.EnergyCost.GetWithModifiers(CostModifiers.All) == maxCost).ToList();
 				var highestCostCard = highestCostCards.UnstableShuffle(base.Owner.Player.RunState.Rng.CombatCardSelection).First();
+				
+				if (highestCostCard.Type == CardType.Power)
+				{
+					highestCostCard.BaseReplayCount = 1;
+				}
+				
 				await CardCmd.AutoPlay(choiceContext, highestCostCard, null);
-				await CardCmd.AutoPlay(choiceContext, highestCostCard, null);
+				if (highestCostCard.Type != CardType.Power)
+				{
+					await CardCmd.AutoPlay(choiceContext, highestCostCard, null);
+				}
 
 			int thunderCount = isUpgraded ? 3 : 4;
 			for (int i = 0; i < thunderCount; i++)

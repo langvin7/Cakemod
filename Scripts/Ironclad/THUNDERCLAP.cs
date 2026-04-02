@@ -65,7 +65,7 @@ public static class ThunderclapOnPlayPatch
         
         await PowerCmd.Apply<VulnerablePower>(__instance.CombatState.HittableEnemies, __instance.DynamicVars.Vulnerable.BaseValue, __instance.Owner.Creature, __instance);
         
-        await PowerCmd.Apply<WeakPower>(__instance.CombatState.HittableEnemies, 1, __instance.Owner.Creature, __instance);
+        await PowerCmd.Apply<WeakPower>(__instance.CombatState.HittableEnemies, __instance.DynamicVars.Vulnerable.BaseValue, __instance.Owner.Creature, __instance);
 
         CardModel card = __instance.CombatState.CreateCard<Thunder>(__instance.Owner);
         CardCmd.Preview(card);

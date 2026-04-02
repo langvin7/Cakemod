@@ -23,7 +23,7 @@ public static class BloodWallCanonicalVarsPatch
 {
 	private static readonly DynamicVar[] ModifiedVars =
     [
-		new HpLossVar(1m),
+		new HpLossVar(2m),
 		new BlockVar(14m, ValueProp.Move),
 		new PowerVar<PlatingPower>(2m)
     ];

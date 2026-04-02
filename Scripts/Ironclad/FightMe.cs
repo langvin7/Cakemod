@@ -43,7 +43,7 @@ namespace cakemod.Scripts;
             matcher.Advance(-5);
 
             // 将费用修改为你想要的值，例如修改为 0 费
-            matcher.SetInstruction(new CodeInstruction(OpCodes.Ldc_I4_1));
+            matcher.SetInstruction(new CodeInstruction(OpCodes.Ldc_I4_2));
 
                     // 2. 前进 1 步 (相对 Call 是 -4)，到达第 2 个参数 (CardType)
             matcher.Advance(1);

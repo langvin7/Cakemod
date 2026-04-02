@@ -44,8 +44,8 @@ public static class PerfectedStrikeChoiceHelper
 
     public static async Task HandlePerfectedStrikeAddedToDeck(PerfectedStrike perfectedStrike)
     {
-        // 如果已经选择过，则不执行抽卡
-        if (PerfectedStrikePatch.IsSelected(perfectedStrike))
+        // 如果已经选择过，或正在克隆中，则不执行抽卡
+        if (PerfectedStrikePatch.IsSelected(perfectedStrike) || PerfectedStrikePatch.IsCloningPerfectedStrike)
             return;
         
         var localPlayerId = PlatformUtil.GetLocalPlayerId(PlatformUtil.PrimaryPlatform);

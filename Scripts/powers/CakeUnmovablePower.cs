@@ -59,7 +59,7 @@ public sealed class CakeUnmovablePower : CakePowerModel
 		int num = CombatManager.Instance.History.CardPlaysStarted.Count((CardPlayStartedEntry e) => 
 			e.Actor == base.Owner && 
 			e.CardPlay.IsFirstInSeries && 
-			e.CardPlay.Card.Rarity == CardRarity.Common && 
+			(e.CardPlay.Card.Rarity == CardRarity.Common||e.CardPlay.Card.Rarity == CardRarity.Basic) && 
 			e.CardPlay.Card.Type == CardType.Skill && 
 			e.HappenedThisTurn(base.CombatState));
 
